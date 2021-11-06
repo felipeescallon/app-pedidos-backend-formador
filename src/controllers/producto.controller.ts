@@ -1,24 +1,18 @@
+import {authenticate} from '@loopback/authentication';
 import {
   Count,
-  CountSchema,
-  Filter,
-  FilterExcludingWhere,
-  repository,
-  Where,
+  CountSchema, Filter, FilterExcludingWhere, repository, Where
 } from '@loopback/repository';
 import {
-  post,
-  param,
-  get,
-  getModelSchemaRef,
-  patch,
-  put,
-  del,
-  requestBody,
-  response,
+  del, get,
+  getModelSchemaRef, param, patch, post, put, requestBody,
+  response
 } from '@loopback/rest';
 import {Producto} from '../models';
 import {ProductoRepository} from '../repositories';
+
+//PARA PROTEGER TODO DEBO PONERLE AUTENTICACIÓN A TODA LA CLASE (va antes de la clase y no antes del método)
+@authenticate("admin")//AUTENTICACIÓN DEL ADMIN (la estrategia se llama admin) .Para crear un producto la persona debe estar autenticada: token)
 
 export class ProductoController {
   constructor(
@@ -26,6 +20,8 @@ export class ProductoController {
     public productoRepository : ProductoRepository,
   ) {}
 
+  //aqui solo protego al metodo post(./productos), a los demás no, por ejemplo: get(post(./productos))
+  //@authenticate("admin")//AUTENTICACIÓN DEL ADMIN (la estrategia se llama admin) .Para crear un producto la persona debe estar autenticada: token)
   @post('/productos')
   @response(200, {
     description: 'Producto model instance',
@@ -47,6 +43,7 @@ export class ProductoController {
     return this.productoRepository.create(producto);
   }
 
+  @authenticate.skip()//con esto hago una excepción de autenticación en el método que sigue (ES DECIR SE PROTEGE TODO EL CONTROLADOR MENOS DICHO MÉTODO)
   @get('/productos/count')
   @response(200, {
     description: 'Producto model count',

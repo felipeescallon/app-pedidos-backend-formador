@@ -1,4 +1,4 @@
-import {Entity, model, property, hasMany} from '@loopback/repository';
+import {Entity, hasMany, model, property} from '@loopback/repository';
 import {Pedido} from './pedido.model';
 
 @model()
@@ -36,7 +36,7 @@ export class Persona extends Entity {
 
   @property({
     type: 'string',
-    required: true,
+    required: false,//se cambió a false (clave NO obligatoria para hacer la prueba inicial desde el Postman y así no solicita la clave) para cambiar el valor true que estaba por defecto con Loopback (clave obligatoria)
   })
   clave: string;
 
