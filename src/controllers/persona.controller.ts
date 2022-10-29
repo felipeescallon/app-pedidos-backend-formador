@@ -26,10 +26,10 @@ const fetch = require("node-fetch");//importamos para acceder a urls externas
 export class PersonaController {
   constructor(
     @repository(PersonaRepository)
-    public personaRepository : PersonaRepository,
+    public personaRepository: PersonaRepository,
     @service(AutenticacionService)
-    public servicioAutenticacion : AutenticacionService,
-  ) {}
+    public servicioAutenticacion: AutenticacionService,
+  ) { }
 
   //UTILIZANDO LOS MÉTODOS (cuando una persona los invoque) DE autenticacion.service.ts (identificación de usuarios):
   @post("/identificarPersona", {//ruta específica del post
@@ -89,14 +89,22 @@ export class PersonaController {
     let asunto = 'Registro en la plataforma';
     //let contenido = `Hola ${persona.nombres}, su nombre de usuario es: ${persona.correo} y su contraseña es: ${personas.clave}`;
     let contenido = `Hola ${persona.nombres}, su nombre de usuario es: ${persona.correo} y su contraseña es: ${clave}`;////como lo modifiqué, si muestra el texto plano, pero con esto que tenía el profe Jefferson ${persona.clave}` sería para mostrar la clave cifrada que no sirve;//los string templates(``) son usados aquí para dinamizar. Se hace login con el correo
+    //Vía email:
     //fetch(`http://127.0.0.1:5000/envio-correo?correo_destino=${destino}&asunto=${asunto}&contenido=${contenido}`)//el ? se usa para el get. & se usa para agregar más parámetros a la petición
     fetch(`${Llaves.urlServicioNotificaciones}/envio-correo?correo_destino=${destino}&asunto=${asunto}&contenido=${contenido}`)
       .then((data: any) => {//any es un tipo genérico de datos en typescript
         console.log(data);//controlando: para darse cuenta que fue enviado o no
-
       })//.then usado para obtener la respuesta del fetch
+
+    //Vía sms:
+    fetch(`${Llaves.urlServicioNotificaciones}/sms?mensaje=${contenido}&telefono=${persona.celular}`)
+      .then((data: any) => {//any es un tipo genérico de datos en typescript
+        console.log(data);//controlando: para darse cuenta que fue enviado o no
+      })//.then usado para obtener la respuesta del fetch
+
     return p;//retorna la persona que fue creada
     //YA CON LO ANTERIOR SE CORRE LA APP (ejecutando npm start en la terminal) y luego probando la funcionalidad con Postman
+
 
   }
 
